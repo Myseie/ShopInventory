@@ -1,0 +1,55 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IPagedList<ShopInventory.Models.Product>
+
+<h2>Produktlista</h2>
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Sök efter en produkt med namn eller kategori" />
+        <input type="submit" value="Sök" class="btn btn-primary"/>
+    </div>
+</form>
+
+<a asp-action="Create">Skapa</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Bild</th>
+            <th>Namn</th>
+            <th>Beskrivning</th>
+            <th>Pris</th>
+            <th>Kategori</th>
+            <th>Handlingar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="@item.ImagePath" alt="Produktbild" style="width: 100px; height: auto;" />
+                    }
+                    else
+                    {
+                        <span>Ingen bild</span>
+                    }
+                </td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Price</td>
+                <td>@item.Category</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Ta bort</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="pagination-container">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewData["CurrentFilter"] }))
+</div>
